@@ -1,46 +1,12 @@
-import 'package:expenses/components/chart.dart';
+import 'package:expenses/expense.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'components/transaction_form.dart';
-import 'components/transaction_list.dart';
-import 'models/transaction.dart';
 
 main() => runApp(ExpensesApp());
 
 class ExpensesApp extends StatelessWidget {
-  const ExpensesApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        Locale('pt', 'BR'),
-      ],
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        accentColor: Colors.amber,
-        fontFamily: 'Quicksand',
-        textTheme: ThemeData.light().textTheme.copyWith(
-              titleLarge: TextStyle(
-                  fontFamily: 'OpenSans',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-        appBarTheme: AppBarTheme(
-          textTheme: ThemeData.light().textTheme.copyWith(
-                titleLarge: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-        ),
-      ),
       home: MyHomePage(),
     );
   }
@@ -52,94 +18,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'Novo tenis de corrida',
-      value: 400.52,
-      date: DateTime.now().subtract(Duration(
-        days: 33,
-      )),
-    ),
-    Transaction(
-      id: 't1',
-      title: 'Novo tenis de corrida',
-      value: 33.52,
-      date: DateTime.now().subtract(Duration(
-        days: 2,
-      )),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Conta de Sucupira',
-      value: 168.52,
-      date: DateTime.now().subtract(Duration(
-        days: 4,
-      )),
-    ),
-  ];
-
-  List<Transaction> get _recentTransactions {
-    return _transactions.where((tr) {
-      return tr.date.isAfter(DateTime.now().subtract(Duration(
-        days: 7,
-      )));
-    }).toList();
-  }
-
-  _addTransaction(String title, double value) {
-    final newTransaction = Transaction(
-      id: Random().nextDouble().toString(),
-      title: title,
-      value: value,
-      date: DateTime.now(),
-    );
-
-    setState(() {
-      _transactions.add(newTransaction);
-    });
-
-    Navigator.of(context).pop();
-  }
-
-  _openTransactionFormModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return TransactionForm(_addTransaction);
-      },
-    );
+  @override
+  void initState() {
+    super.initState();
+    new Future.delayed(
+        const Duration(seconds: 2),
+        () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return ExpenseApp();
+              }),
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Despesas Pessoais",
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => _openTransactionFormModal(context),
-            icon: Icon(Icons.add),
-            color: Colors.red,
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_transactions)
-          ],
+    return new Scaffold(
+      backgroundColor: Colors.white,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        child: Image.asset(
+          "assets/images/dinheiro.gif",
+          gaplessPlayback: true,
+          fit: BoxFit.scaleDown,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _openTransactionFormModal(context),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
