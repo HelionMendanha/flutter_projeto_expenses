@@ -43,78 +43,85 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: _titleControler,
-              onSubmitted: (_) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: 'Despesa',
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: 10, // MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            children: <Widget>[
+              TextField(
+                controller: _titleControler,
+                onSubmitted: (_) => _submitForm(),
+                decoration: InputDecoration(
+                  labelText: 'Despesa',
+                ),
               ),
-            ),
-            TextField(
-              controller: _valueControler,
-              onSubmitted: (_) => _submitForm(),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                labelText: 'Valor (R\$)',
+              TextField(
+                controller: _valueControler,
+                onSubmitted: (_) => _submitForm(),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Valor (R\$)',
+                ),
               ),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'Nenhuma data selecionanda!'
-                          : DateFormat.yMMMd('pt_BR').format(_selectedDate),
+              Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'Nenhuma data selecionanda!'
+                            : DateFormat.yMMMd('pt_BR').format(_selectedDate),
+                      ),
                     ),
-                  ),
+                    ElevatedButton(
+                      onPressed: _showDatePicker,
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.black, //change text color of button
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 50,
+                            vertical: 20,
+                          ),
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          )),
+                      child: Text(
+                        'Selecionar data',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
                   ElevatedButton(
-                    onPressed: _showDatePicker,
+                    onPressed: _submitForm,
                     style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.black, //change text color of button
-                        elevation: 0,
+                        primary: Colors.purple,
                         padding: EdgeInsets.symmetric(
                           horizontal: 50,
                           vertical: 20,
                         ),
                         textStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
                         )),
-                    child: Text(
-                      'Selecionar data',
-                    ),
+                    child: Text('Nova Transação'),
                   ),
                 ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.purple,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 50,
-                        vertical: 20,
-                      ),
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.normal,
-                      )),
-                  child: Text('Nova Transação'),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

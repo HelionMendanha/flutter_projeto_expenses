@@ -50,7 +50,51 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _transactions = [];
+  bool _showChart = false;
+  final List<Transaction> _transactions = [
+    Transaction(
+      id: 't1',
+      title: 'Tenis 1',
+      date: DateTime.now(),
+      value: 10.99,
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Tenis 2',
+      date: DateTime.now(),
+      value: 212.99,
+    ),
+    Transaction(
+      id: 't3',
+      title: 'Tenis 3',
+      date: DateTime.now(),
+      value: 310.99,
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Tenis 4',
+      date: DateTime.now(),
+      value: 410.99,
+    ),
+    Transaction(
+      id: 't5',
+      title: 'Tenis 5',
+      date: DateTime.now().subtract(Duration(days: 1)),
+      value: 10.99,
+    ),
+    Transaction(
+      id: 't6',
+      title: 'Tenis 6',
+      date: DateTime.now().subtract(Duration(days: 2)),
+      value: 660.99,
+    ),
+    Transaction(
+      id: 't7',
+      title: 'Tenis 877',
+      date: DateTime.now().subtract(Duration(days: 3)),
+      value: 721.99,
+    ),
+  ];
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
@@ -92,25 +136,70 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Despesas Pessoais",
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final appBar = AppBar(
+      title: Text(
+        "Despesas Pessoais",
+        style: TextStyle(
+          fontSize: 20 * MediaQuery.of(context).textScaleFactor,
         ),
-        actions: [
+      ),
+      actions: [
+        if (isLandscape)
           IconButton(
-            onPressed: () => _openTransactionFormModal(context),
-            icon: Icon(Icons.add),
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+            icon: Icon(_showChart ? Icons.list : Icons.show_chart),
             color: Colors.red,
           ),
-        ],
-      ),
+        IconButton(
+          onPressed: () => _openTransactionFormModal(context),
+          icon: Icon(Icons.add),
+          color: Colors.red,
+        ),
+      ],
+    );
+
+    final availableHeigth = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
+    return new Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_transactions, _deleteTransaction)
+            if (isLandscape)
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Text('Exibir Gráfico'),
+              //     Switch(
+              //       value: _showChart,
+              //       onChanged: (value) {
+              //         setState(() {
+              //           _showChart = value;
+              //         });
+              //       },
+              //     ),
+              //   ],
+              // ),
+              if (_showChart || !isLandscape)
+                Container(
+                  height: availableHeigth * (isLandscape ? 0.7 : 0.30),
+                  child: Chart(_recentTransactions),
+                ),
+            if (!_showChart || !isLandscape)
+              Container(
+                height: availableHeigth * 0.70,
+                child: TransactionList(_transactions, _deleteTransaction),
+              )
           ],
         ),
       ),
